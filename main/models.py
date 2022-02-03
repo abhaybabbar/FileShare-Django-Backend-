@@ -12,7 +12,7 @@ class FileShare(models.Model):
     message = models.TextField(blank=True)
     slug = models.SlugField(max_length=8, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    files = models.ManyToManyField(File)
+    files = models.ManyToManyField(File, blank=True)
     
     def numberOfFiles(self):
         return self.files.count()
