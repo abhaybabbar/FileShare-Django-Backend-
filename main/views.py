@@ -27,7 +27,7 @@ class UploadFiles(APIView):
             fileshare = FileShare.objects.create(message=message)
             for file in files:
                 fileshare.files.add(File.objects.create(file=file).id)
-            return Response('ok', status=200)
+            return Response({'message': 'ok', 'slug': fileshare.slug}, status=200)
         except Exception as e:
             print(e)
             return Response('Something went wrong', status=403)

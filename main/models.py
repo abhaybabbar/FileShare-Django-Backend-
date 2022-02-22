@@ -8,6 +8,19 @@ class File(models.Model):
     def __str__(self):
         return self.file.name
     
+    def fileSizeInStr(self):
+        fileSize = self.file.size
+        sizeArray = ["Bytes", "KB", "MB", "GB"]
+        i = 0
+        while (fileSize > 900):
+            fileSize /= 1024
+            i+=1
+        return str(round(fileSize * 100) / 100) + " " + sizeArray[i]
+    
+    @property
+    def fileSize(self):
+        return self.file.size
+    
 class FileShare(models.Model):
     message = models.TextField(blank=True)
     slug = models.SlugField(max_length=8, unique=True)
@@ -16,6 +29,19 @@ class FileShare(models.Model):
     
     def numberOfFiles(self):
         return self.files.count()
+    
+    
+    def totalFilesSize(self):
+        fileSize = 0
+        for file in self.files.all():
+            fileSize += file.fileSize
+        
+        sizeArray = ["Bytes", "KB", "MB", "GB"]
+        i = 0
+        while (fileSize > 900):
+            fileSize /= 1024
+            i+=1
+        return str(round(fileSize * 100) / 100) + " " + sizeArray[i]
     
     def __str__(self):
         return self.slug

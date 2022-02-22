@@ -4,10 +4,10 @@ from .models import FileShare, File
 class FileSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
-        fields = '__all__'
+        fields = ['id', 'file', 'fileSizeInStr']
 
 class FileShareSerializer(serializers.ModelSerializer):
     files = FileSerializer(many=True)
     class Meta:
         model = FileShare
-        fields = ['message', 'files']
+        fields = ['message', 'files', 'numberOfFiles', 'totalFilesSize']
