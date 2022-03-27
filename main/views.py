@@ -3,6 +3,19 @@ from rest_framework.response import Response
 from .models import FileShare, File
 from .serializers import FileShareSerializer
 
+from redis import Redis
+from rq import Queue
+from datetime import timedelta
+
+queue = Queue(connection=Redis())
+
+def delete_file(id):
+    fileShare = FileShare.objects.get(id=id)
+    for file in fileShare.files.all():
+        file.file.delete(save=False)
+        file.delete()
+    fileShare.delete()
+
 # Create your views here.
 class GetFiles(APIView):
     def get(self, request, format=None, **kwargs):
@@ -27,6 +40,7 @@ class UploadFiles(APIView):
             fileshare = FileShare.objects.create(message=message)
             for file in files:
                 fileshare.files.add(File.objects.create(file=file).id)
+            job = queue.enqueue_in(timedelta(days=1), delete_file, fileshare.id)
             return Response({'message': 'ok', 'slug': fileshare.slug}, status=200)
         except Exception as e:
             print(e)
