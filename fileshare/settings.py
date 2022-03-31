@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'main',
     'rest_framework',
     'corsheaders',
-    "django_rq",
+    # "django_rq",
     'storages',
 ]
 
